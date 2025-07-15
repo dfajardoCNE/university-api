@@ -12,7 +12,7 @@ import { CreateUniversityUseCase } from '../../../domain/use-cases/university/cr
 import { UpdateUniversityUseCase } from '../../../domain/use-cases/university/update-university.use-case';
 import { DeleteUniversityUseCase } from '../../../domain/use-cases/university/delete-university.use-case';
 
-@ApiTags('universities')
+@ApiTags('universidad')
 @Controller('universities')
 export class UniversityController {
   constructor(

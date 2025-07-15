@@ -13,7 +13,7 @@ import { CreateThreadUseCase } from '../../../domain/use-cases/thread/create-thr
 import { UpdateThreadUseCase } from '../../../domain/use-cases/thread/update-thread.use-case';
 import { DeleteThreadUseCase } from '../../../domain/use-cases/thread/delete-thread.use-case';
 
-@ApiTags('threads')
+@ApiTags('foros')
 @Controller('threads')
 export class ThreadController {
   constructor(

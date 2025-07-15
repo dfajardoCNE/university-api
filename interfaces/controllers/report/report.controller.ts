@@ -11,7 +11,7 @@ import { GetReportsByStatusUseCase } from '../../../domain/use-cases/report/get-
 import { CreateReportUseCase } from '../../../domain/use-cases/report/create-report.use-case';
 import { UpdateReportStatusUseCase } from '../../../domain/use-cases/report/update-report-status.use-case';
 
-@ApiTags('reports')
+@ApiTags('reportes')
 @Controller('reports')
 export class ReportController {
   constructor(

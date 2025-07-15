@@ -13,7 +13,7 @@ import { CreateFacultyUseCase } from '../../../domain/use-cases/faculty/create-f
 import { UpdateFacultyUseCase } from '../../../domain/use-cases/faculty/update-faculty.use-case';
 import { DeleteFacultyUseCase } from '../../../domain/use-cases/faculty/delete-faculty.use-case';
 
-@ApiTags('faculties')
+@ApiTags('facultades')
 @Controller('faculties')
 export class FacultyController {
   constructor(

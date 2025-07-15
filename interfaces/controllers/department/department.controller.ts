@@ -13,7 +13,7 @@ import { CreateDepartmentUseCase } from '../../../domain/use-cases/department/cr
 import { UpdateDepartmentUseCase } from '../../../domain/use-cases/department/update-department.use-case';
 import { DeleteDepartmentUseCase } from '../../../domain/use-cases/department/delete-department.use-case';
 
-@ApiTags('departments')
+@ApiTags('departamentos')
 @Controller('departments')
 export class DepartmentController {
   constructor(

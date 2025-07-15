@@ -12,7 +12,7 @@ import { CreateProfessorUseCase } from '../../../domain/use-cases/professor/crea
 import { UpdateProfessorUseCase } from '../../../domain/use-cases/professor/update-professor.use-case';
 import { DeleteProfessorUseCase } from '../../../domain/use-cases/professor/delete-professor.use-case';
 
-@ApiTags('professors')
+@ApiTags('profesores')
 @Controller('professors')
 export class ProfessorController {
   constructor(

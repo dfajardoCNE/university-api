@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../../../infrastructure/auth/guards/jwt-auth.guard
 import { RecipientResponseDto } from '../../../application/dto/notification-recipient/recipient-response.dto';
 import { NotificationRecipientService } from './notification-recipient.service';
 
-@ApiTags('notification-recipients')
+@ApiTags('notificaciones')
 @Controller('notification-recipients')
 export class NotificationRecipientController {
   constructor(private readonly recipientService: NotificationRecipientService) {}

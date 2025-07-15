@@ -13,7 +13,7 @@ import { CreateCourseUseCase } from '../../../domain/use-cases/course/create-cou
 import { UpdateCourseUseCase } from '../../../domain/use-cases/course/update-course.use-case';
 import { DeleteCourseUseCase } from '../../../domain/use-cases/course/delete-course.use-case';
 
-@ApiTags('courses')
+@ApiTags('cursos')
 @Controller('courses')
 export class CourseController {
   constructor(

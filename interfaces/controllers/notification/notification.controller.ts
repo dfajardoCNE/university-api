@@ -10,7 +10,7 @@ import { CreateNotificationUseCase } from '../../../domain/use-cases/notificatio
 import { DeleteNotificationUseCase } from '../../../domain/use-cases/notification/delete-notification.use-case';
 import { NotificationRecipientService } from '../notification-recipient/notification-recipient.service';
 
-@ApiTags('notifications')
+@ApiTags('notificaciones')
 @Controller('notifications')
 export class NotificationController {
   constructor(

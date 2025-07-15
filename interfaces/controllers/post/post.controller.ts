@@ -12,7 +12,7 @@ import { CreatePostUseCase } from '../../../domain/use-cases/post/create-post.us
 import { UpdatePostUseCase } from '../../../domain/use-cases/post/update-post.use-case';
 import { DeletePostUseCase } from '../../../domain/use-cases/post/delete-post.use-case';
 
-@ApiTags('posts')
+@ApiTags('publicaciones')
 @Controller('posts')
 export class PostController {
   constructor(
