@@ -1,0 +1,9 @@
+{
+  "name": "prisma-seed",
+  "version": "1.0.0",
+  "description": "Prisma seed script",
+  "main": "seed.ts",
+  "prisma": {
+    "seed": "ts-node seed.ts"
+  }
+}

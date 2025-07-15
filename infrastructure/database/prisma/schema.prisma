@@ -1,0 +1,508 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. UNIVERSIDAD, FACULTADES Y DEPARTAMENTOS
+model University {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(150)
+  country     String?   @db.VarChar(100)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  deletedAt   DateTime?
+  
+  // Relaciones
+  faculties   Faculty[]
+  campuses    Campus[]
+
+  @@map("university")
+}
+
+model Faculty {
+  id           Int       @id @default(autoincrement())
+  universityId Int
+  name         String    @db.VarChar(150)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime? @updatedAt
+  deletedAt    DateTime?
+  
+  // Relaciones
+  university   University @relation(fields: [universityId], references: [id])
+  departments  Department[]
+
+  @@map("faculty")
+}
+
+model Department {
+  id          Int       @id @default(autoincrement())
+  facultyId   Int
+  name        String    @db.VarChar(150)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  deletedAt   DateTime?
+  
+  // Relaciones
+  faculty     Faculty   @relation(fields: [facultyId], references: [id])
+  careers     Career[]
+
+  @@map("department")
+}
+
+// 2. CAMPUS, AULAS Y HORARIOS
+model Campus {
+  id           Int       @id @default(autoincrement())
+  universityId Int
+  name         String    @db.VarChar(100)
+  location     String?   @db.VarChar(200)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime? @updatedAt
+  deletedAt    DateTime?
+  
+  // Relaciones
+  university   University @relation(fields: [universityId], references: [id])
+  classrooms   Classroom[]
+  students     Student[]
+  careerCampus CareerCampus[]
+
+  @@map("campus")
+}
+
+model Classroom {
+  id         Int       @id @default(autoincrement())
+  campusId   Int
+  name       String    @db.VarChar(50)
+  capacity   Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
+  deletedAt  DateTime?
+  
+  // Relaciones
+  campus     Campus    @relation(fields: [campusId], references: [id])
+  sections   Section[]
+
+  @@map("classroom")
+}
+
+model Term {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(20)
+  startDate DateTime  @db.Date
+  endDate   DateTime  @db.Date
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  
+  // Relaciones
+  sections  Section[]
+
+  @@map("term")
+}
+
+model SessionTime {
+  id        Int       @id @default(autoincrement())
+  dayOfWeek Int       @db.SmallInt
+  startTime DateTime  @db.Time()
+  endTime   DateTime  @db.Time()
+  createdAt DateTime  @default(now())
+  
+  // Relaciones
+  sections  Section[]
+
+  @@map("session_time")
+}
+
+// 3. CARRERAS, CURSOS Y PRERREQUISITOS
+model Career {
+  id           Int       @id @default(autoincrement())
+  departmentId Int?
+  name         String    @db.VarChar(100)
+  description  String?   @db.Text
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime? @updatedAt
+  
+  // Relaciones
+  department   Department? @relation(fields: [departmentId], references: [id])
+  courses      Course[]
+  students     Student[]
+  applications Application[]
+  careerCampus CareerCampus[]
+
+  @@map("career")
+}
+
+model CareerCampus {
+  careerId  Int
+  campusId  Int
+  
+  // Relaciones
+  career    Career @relation(fields: [careerId], references: [id])
+  campus    Campus @relation(fields: [campusId], references: [id])
+
+  @@id([careerId, campusId])
+  @@map("career_campus")
+}
+
+model Course {
+  id          Int       @id @default(autoincrement())
+  careerId    Int
+  code        String    @unique @db.VarChar(10)
+  name        String    @db.VarChar(100)
+  credits     Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  
+  // Relaciones
+  career      Career    @relation(fields: [careerId], references: [id])
+  sections    Section[]
+  exams       Exam[]
+  practices   Practice[]
+  assignments Assignment[]
+  
+  // Auto-relación para prerrequisitos
+  prerequisites    CoursePrerequisite[] @relation("CourseToPrerequisite")
+  prerequisiteFor  CoursePrerequisite[] @relation("PrerequisiteToCourse")
+
+  @@map("course")
+}
+
+model CoursePrerequisite {
+  courseId       Int
+  prerequisiteId Int
+  
+  // Relaciones
+  course         Course @relation("CourseToPrerequisite", fields: [courseId], references: [id])
+  prerequisite   Course @relation("PrerequisiteToCourse", fields: [prerequisiteId], references: [id])
+
+  @@id([courseId, prerequisiteId])
+  @@map("course_prerequisite")
+}
+
+// 4. PERSONAS, USUARIOS, ROLES Y PERMISOS
+model Person {
+  id             Int       @id @default(autoincrement())
+  firstName      String    @db.VarChar(50)
+  lastName       String    @db.VarChar(50)
+  email          String    @unique @db.VarChar(100)
+  dateOfBirth    DateTime? @db.Date
+  profilePhotoPath String? @db.VarChar(255)
+  createdAt      DateTime  @default(now())
+  
+  // Relaciones
+  user           User?
+  student        Student?
+  professor      Professor?
+  applications   Application[]
+
+  @@map("person")
+}
+
+model Role {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique @db.VarChar(50)
+  description String? @db.VarChar(200)
+  
+  // Relaciones
+  users       User[]
+
+  @@map("role")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  personId     Int       @unique
+  username     String    @unique @db.VarChar(50)
+  passwordHash String    @db.VarChar(255)
+  roleId       Int
+  createdAt    DateTime  @default(now())
+  lastLogin    DateTime?
+  
+  // Relaciones
+  person       Person    @relation(fields: [personId], references: [id])
+  role         Role      @relation(fields: [roleId], references: [id])
+  threads      Thread[]
+  posts        Post[]
+  createdNotifications Notification[]
+  receivedNotifications NotificationRecipient[]
+  createdReports Report[] @relation("ReportedBy")
+
+  @@map("user")
+}
+
+// 5. SOLICITUDES Y MATRÍCULAS
+model Application {
+  id              Int       @id @default(autoincrement())
+  personId        Int
+  careerId        Int
+  campusId        Int
+  applicationDate DateTime  @default(now())
+  status          String    @db.VarChar(20)
+  createdAt       DateTime  @default(now())
+  
+  // Relaciones
+  person          Person    @relation(fields: [personId], references: [id])
+  career          Career    @relation(fields: [careerId], references: [id])
+  documents       ApplicationDocument[]
+
+  @@map("application")
+}
+
+model ApplicationDocument {
+  id            Int      @id @default(autoincrement())
+  applicationId Int
+  documentType  String   @db.VarChar(50)
+  filePath      String   @db.VarChar(255)
+  uploadDate    DateTime @default(now())
+  
+  // Relaciones
+  application   Application @relation(fields: [applicationId], references: [id])
+
+  @@map("application_document")
+}
+
+model Student {
+  id             Int       @id @default(autoincrement())
+  personId       Int       @unique
+  careerId       Int
+  campusId       Int
+  enrollmentDate DateTime  @default(now())
+  status         String    @db.VarChar(20)
+  createdAt      DateTime  @default(now())
+  
+  // Relaciones
+  person         Person    @relation(fields: [personId], references: [id])
+  career         Career    @relation(fields: [careerId], references: [id])
+  campus         Campus    @relation(fields: [campusId], references: [id])
+  sections       StudentSection[]
+  submissions    Submission[]
+  teacherRatings TeacherRating[]
+
+  @@map("student")
+}
+
+// 6. PROFESORES, SECCIONES Y CALIFICACIONES
+model Professor {
+  id        Int      @id @default(autoincrement())
+  personId  Int      @unique
+  hireDate  DateTime @db.Date
+  createdAt DateTime @default(now())
+  
+  // Relaciones
+  person    Person   @relation(fields: [personId], references: [id])
+  sections  Section[]
+  exams     Exam[]
+  practices Practice[]
+  assignments Assignment[]
+  ratings   TeacherRating[]
+
+  @@map("professor")
+}
+
+model Section {
+  id            Int       @id @default(autoincrement())
+  courseId      Int
+  termId        Int
+  sessionTimeId Int
+  professorId   Int
+  classroomId   Int
+  createdAt     DateTime  @default(now())
+  
+  // Relaciones
+  course        Course    @relation(fields: [courseId], references: [id])
+  term          Term      @relation(fields: [termId], references: [id])
+  sessionTime   SessionTime @relation(fields: [sessionTimeId], references: [id])
+  professor     Professor @relation(fields: [professorId], references: [id])
+  classroom     Classroom @relation(fields: [classroomId], references: [id])
+  students      StudentSection[]
+
+  @@map("section")
+}
+
+model StudentSection {
+  id          Int       @id @default(autoincrement())
+  studentId   Int
+  sectionId   Int
+  grade       Float?
+  createdAt   DateTime  @default(now())
+  
+  // Relaciones
+  student     Student   @relation(fields: [studentId], references: [id])
+  section     Section   @relation(fields: [sectionId], references: [id])
+
+  @@map("student_section")
+}
+
+// 7. EVALUACIONES Y CALIFICACIONES
+model Exam {
+  id          Int       @id @default(autoincrement())
+  courseId    Int
+  professorId Int
+  title       String    @db.VarChar(100)
+  description String?   @db.Text
+  examDate    DateTime  @db.Date
+  weight      Float
+  createdAt   DateTime  @default(now())
+  
+  // Relaciones
+  course      Course    @relation(fields: [courseId], references: [id])
+  professor   Professor @relation(fields: [professorId], references: [id])
+  submissions Submission[]
+
+  @@map("exam")
+}
+
+model Practice {
+  id          Int       @id @default(autoincrement())
+  courseId    Int
+  professorId Int
+  title       String    @db.VarChar(100)
+  description String?   @db.Text
+  dueDate     DateTime  @db.Date
+  weight      Float
+  createdAt   DateTime  @default(now())
+  
+  // Relaciones
+  course      Course    @relation(fields: [courseId], references: [id])
+  professor   Professor @relation(fields: [professorId], references: [id])
+  submissions Submission[]
+
+  @@map("practice")
+}
+
+model Assignment {
+  id          Int       @id @default(autoincrement())
+  courseId    Int
+  professorId Int
+  title       String    @db.VarChar(100)
+  description String?   @db.Text
+  dueDate     DateTime  @db.Date
+  weight      Float
+  createdAt   DateTime  @default(now())
+  
+  // Relaciones
+  course      Course    @relation(fields: [courseId], references: [id])
+  professor   Professor @relation(fields: [professorId], references: [id])
+  submissions Submission[]
+
+  @@map("assignment")
+}
+
+model Submission {
+  id           Int       @id @default(autoincrement())
+  studentId    Int
+  examId       Int?
+  practiceId   Int?
+  assignmentId Int?
+  filePath     String?   @db.VarChar(255)
+  grade        Float?
+  feedback     String?   @db.Text
+  submittedAt  DateTime  @default(now())
+  
+  // Relaciones
+  student      Student   @relation(fields: [studentId], references: [id])
+  exam         Exam?     @relation(fields: [examId], references: [id])
+  practice     Practice? @relation(fields: [practiceId], references: [id])
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id])
+
+  @@map("submission")
+}
+
+model TeacherRating {
+  id          Int       @id @default(autoincrement())
+  studentId   Int
+  professorId Int
+  rating      Int
+  comment     String?   @db.Text
+  createdAt   DateTime  @default(now())
+  
+  // Relaciones
+  student     Student   @relation(fields: [studentId], references: [id])
+  professor   Professor @relation(fields: [professorId], references: [id])
+
+  @@map("teacher_rating")
+}
+
+// 8. FORO Y COMUNICACIÓN
+model Thread {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  title     String    @db.VarChar(200)
+  content   String    @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  
+  // Relaciones
+  user      User      @relation(fields: [userId], references: [id])
+  posts     Post[]
+  reports   Report[]
+
+  @@map("thread")
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  threadId  Int
+  userId    Int
+  content   String    @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  
+  // Relaciones
+  thread    Thread    @relation(fields: [threadId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  reports   Report[]
+
+  @@map("post")
+}
+
+model Notification {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  title     String    @db.VarChar(100)
+  message   String    @db.Text
+  createdAt DateTime  @default(now())
+  
+  // Relaciones
+  user      User      @relation(fields: [userId], references: [id])
+  recipients NotificationRecipient[]
+
+  @@map("notification")
+}
+
+model NotificationRecipient {
+  id             Int       @id @default(autoincrement())
+  notificationId Int
+  userId         Int
+  isRead         Boolean   @default(false)
+  readAt         DateTime?
+  
+  // Relaciones
+  notification   Notification @relation(fields: [notificationId], references: [id])
+  user           User      @relation(fields: [userId], references: [id])
+
+  @@map("notification_recipient")
+}
+
+model Report {
+  id          Int       @id @default(autoincrement())
+  threadId    Int?
+  postId      Int?
+  reportedBy  Int
+  reason      String    @db.Text
+  status      String    @db.VarChar(20)
+  createdAt   DateTime  @default(now())
+  resolvedAt  DateTime?
+  
+  // Relaciones
+  thread      Thread?   @relation(fields: [threadId], references: [id])
+  post        Post?     @relation(fields: [postId], references: [id])
+  user        User      @relation("ReportedBy", fields: [reportedBy], references: [id])
+
+  @@map("report")
+}
