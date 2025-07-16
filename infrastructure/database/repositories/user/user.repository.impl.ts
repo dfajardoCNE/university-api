@@ -2,42 +2,58 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { User } from '../../../../domain/entities/user.entity';
 import { UserRepository } from '../../../../domain/repositories/user.repository';
+import { Request } from 'express';
+import { Req } from '@nestjs/common';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(): Promise<User[]> {
-    return this.prisma.user.findMany({
+    const users = await this.prisma.user.findMany({
       include: {
         person: true,
         role: true,
       },
     });
+    return users.map(user => ({
+      ...user,
+      password: user.passwordHash ?? '',
+    })) as User[];
   }
 
   async findById(id: number): Promise<User> {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id },
       include: {
         person: true,
         role: true,
       },
     });
+    if (!user) return null;
+    return {
+      ...user,
+      password: user.passwordHash ?? '',
+    } as User;
   }
 
   async findByUsername(username: string): Promise<User> {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { username },
       include: {
         person: true,
         role: true,
       },
     });
+    if (!user) return null;
+    return {
+      ...user,
+      password: user.passwordHash ?? '',
+    } as User;
   }
 
   async findByEmail(email: string): Promise<User> {
-    return this.prisma.user.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: {
         person: {
           email,
@@ -48,22 +64,32 @@ export class UserRepositoryImpl implements UserRepository {
         role: true,
       },
     });
+    if (!user) return null;
+    return {
+      ...user,
+      password: user.passwordHash ?? '', // Map passwordHash to password
+    } as User;
   }
 
   async create(user: Partial<User>): Promise<User> {
     const { id, ...data } = user;
-    return this.prisma.user.create({
+    const createdUser = await this.prisma.user.create({
       data: data as any,
       include: {
         person: true,
         role: true,
       },
     });
+    // Ensure the returned object includes the required 'password' property
+    return {
+      ...createdUser,
+      password: createdUser.passwordHash ?? '', // or handle as needed
+    } as User;
   }
 
   async update(id: number, user: Partial<User>): Promise<User> {
     const { id: _, ...data } = user;
-    return this.prisma.user.update({
+    const updatedUser = await this.prisma.user.update({
       where: { id },
       data: data as any,
       include: {
@@ -71,6 +97,12 @@ export class UserRepositoryImpl implements UserRepository {
         role: true,
       },
     });
+
+    // Ensure the returned object includes the required 'password' property
+    return {
+      ...updatedUser,
+      password: updatedUser.passwordHash ?? '', // or handle as needed
+    } as User;
   }
 
   async delete(id: number): Promise<void> {
