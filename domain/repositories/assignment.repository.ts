@@ -8,4 +8,5 @@ export interface AssignmentRepository {
   create(assignment: Partial<Assignment>): Promise<Assignment>;
   update(id: number, assignment: Partial<Assignment>): Promise<Assignment>;
   delete(id: number): Promise<void>;
+  findUpcomingBySection(sectionId: number): Promise<any[]>;
 }

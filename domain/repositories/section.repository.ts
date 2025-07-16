@@ -9,4 +9,6 @@ export interface SectionRepository {
   create(section: Partial<Section>): Promise<Section>;
   update(id: number, section: Partial<Section>): Promise<Section>;
   delete(id: number): Promise<void>;
+  getActiveTerms(): Promise<any[]>;
+  findLowEnrollment(): Promise<any[]>;
 }

@@ -36,4 +36,93 @@ export class StudentSectionRepositoryImpl implements StudentSectionRepository {
   async delete(id: number): Promise<void> {
     await this.prisma.studentSection.delete({ where: { id } });
   }
+
+  async findByStudentAndSection(studentId: number, sectionId: number): Promise<StudentSection> {
+    return this.prisma.studentSection.findFirst({
+      where: {
+        studentId,
+        sectionId
+      }
+    });
+  }
+
+  async countBySection(sectionId: number): Promise<number> {
+    return this.prisma.studentSection.count({
+      where: { sectionId }
+    });
+  }
+
+  async findPassedSectionsByStudent(studentId: number): Promise<any[]> {
+    return this.prisma.studentSection.findMany({
+      where: {
+        studentId,
+        finalGrade: {
+          gte: 3.0 // Asumiendo 3.0 como nota mínima de aprobación
+        },
+        status: 'completed'
+      },
+      include: {
+        section: {
+          include: {
+            course: true
+          }
+        }
+      }
+    });
+  }
+
+  async findCompletedSectionsByStudent(studentId: number, termId?: number): Promise<any[]> {
+    const whereClause: any = {
+      studentId,
+      finalGrade: { not: null },
+      status: 'completed'
+    };
+
+    if (termId) {
+      whereClause.section = {
+        termId
+      };
+    }
+
+    return this.prisma.studentSection.findMany({
+      where: whereClause,
+      include: {
+        section: {
+          include: {
+            course: true
+          }
+        }
+      }
+    });
+  }
+
+  async findCurrentSectionsByStudent(studentId: number): Promise<any[]> {
+    const currentDate = new Date();
+
+    return this.prisma.studentSection.findMany({
+      where: {
+        studentId,
+        status: 'active',
+        section: {
+          term: {
+            startDate: { lte: currentDate },
+            endDate: { gte: currentDate }
+          }
+        }
+      },
+      include: {
+        section: {
+          include: {
+            course: true,
+            professor: {
+              include: {
+                person: true
+              }
+            },
+            sessionTime: true
+          }
+        }
+      }
+    });
+  }
 }

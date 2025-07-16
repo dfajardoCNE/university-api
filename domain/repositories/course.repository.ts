@@ -8,4 +8,5 @@ export interface CourseRepository {
   create(course: Partial<Course>): Promise<Course>;
   update(id: number, course: Partial<Course>): Promise<Course>;
   delete(id: number): Promise<void>;
+  count(): Promise<number>;
 }

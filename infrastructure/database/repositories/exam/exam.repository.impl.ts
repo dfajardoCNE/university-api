@@ -72,4 +72,34 @@ export class ExamRepositoryImpl implements ExamRepository {
       where: { id },
     });
   }
+
+  async findUpcomingBySection(sectionId: number): Promise<any[]> {
+    const now = new Date();
+    
+    // Obtener el curso asociado a la sección
+    const section = await this.prisma.section.findUnique({
+      where: { id: sectionId },
+      select: { courseId: true }
+    });
+    
+    if (!section) {
+      return [];
+    }
+    
+    // Buscar exámenes del curso con fecha futura
+    return this.prisma.exam.findMany({
+      where: {
+        courseId: section.courseId,
+        examDate: {
+          gt: now
+        }
+      },
+      orderBy: {
+        examDate: 'asc'
+      },
+      include: {
+        course: true
+      }
+    });
+  }
 }

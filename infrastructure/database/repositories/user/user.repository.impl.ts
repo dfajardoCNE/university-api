@@ -36,6 +36,20 @@ export class UserRepositoryImpl implements UserRepository {
     });
   }
 
+  async findByEmail(email: string): Promise<User> {
+    return this.prisma.user.findFirst({
+      where: {
+        person: {
+          email,
+        },
+      },
+      include: {
+        person: true,
+        role: true,
+      },
+    });
+  }
+
   async create(user: Partial<User>): Promise<User> {
     const { id, ...data } = user;
     return this.prisma.user.create({
@@ -62,6 +76,60 @@ export class UserRepositoryImpl implements UserRepository {
   async delete(id: number): Promise<void> {
     await this.prisma.user.delete({
       where: { id },
+    });
+  }
+
+  // Password reset methods
+  async savePasswordResetToken(userId: number, tokenHash: string, expiresAt: Date): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        resetPasswordToken: tokenHash,
+        resetPasswordExpires: expiresAt,
+      },
+    });
+  }
+
+  async verifyPasswordResetToken(userId: number, tokenHash: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        resetPasswordToken: true,
+        resetPasswordExpires: true,
+      },
+    });
+
+    if (!user || !user.resetPasswordToken || !user.resetPasswordExpires) {
+      return false;
+    }
+
+    if (user.resetPasswordToken !== tokenHash) {
+      return false;
+    }
+
+    if (user.resetPasswordExpires < new Date()) {
+      return false;
+    }
+
+    return true;
+  }
+
+  async invalidatePasswordResetToken(userId: number): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      },
+    });
+  }
+
+  async updatePassword(userId: number, passwordHash: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        passwordHash,
+      },
     });
   }
 }

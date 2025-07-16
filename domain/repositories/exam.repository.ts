@@ -8,4 +8,5 @@ export interface ExamRepository {
   create(exam: Partial<Exam>): Promise<Exam>;
   update(id: number, exam: Partial<Exam>): Promise<Exam>;
   delete(id: number): Promise<void>;
+  findUpcomingBySection(sectionId: number): Promise<any[]>;
 }

@@ -49,4 +49,8 @@ export class CourseRepositoryImpl implements CourseRepository {
       where: { id },
     });
   }
+
+  async count(): Promise<number> {
+    return this.prisma.course.count();
+  }
 }

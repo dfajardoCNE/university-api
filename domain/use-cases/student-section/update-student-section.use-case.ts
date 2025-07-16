@@ -8,6 +8,17 @@ export class UpdateStudentSectionUseCase {
   constructor(@Inject('StudentSectionRepository') private readonly studentSectionRepository: StudentSectionRepository) {}
 
   async execute(id: number, updateStudentSectionDto: UpdateStudentSectionDto): Promise<StudentSection> {
-    return this.studentSectionRepository.update(id, updateStudentSectionDto);
+    // Convertir el DTO a un objeto parcial de StudentSection
+    const studentSectionData: Partial<StudentSection> = {};
+    
+    // Mapear los campos del DTO a la entidad
+    if (updateStudentSectionDto.grade !== undefined) {
+      studentSectionData.currentGrade = updateStudentSectionDto.grade;
+    }
+    
+    // Actualizar la fecha de modificación
+    studentSectionData.updatedAt = new Date();
+    
+    return this.studentSectionRepository.update(id, studentSectionData);
   }
 }

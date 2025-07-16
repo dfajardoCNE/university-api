@@ -5,7 +5,35 @@ import { CoursePrerequisiteRepository } from '../../../../domain/repositories/co
 
 @Injectable()
 export class CoursePrerequisiteRepositoryImpl implements CoursePrerequisiteRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
+
+  async findAll(): Promise<CoursePrerequisite[]> {
+    return this.prisma.coursePrerequisite.findMany({
+      include: {
+        course: true,
+        prerequisite: true,
+      },
+    });
+  }
+
+  async findById(id: number): Promise<CoursePrerequisite> {
+    // Usamos una convención: id es un número compuesto como courseId * 1000 + prerequisiteId
+    const courseId = Math.floor(id / 1000);
+    const prerequisiteId = id % 1000;
+
+    return this.prisma.coursePrerequisite.findUnique({
+      where: {
+        courseId_prerequisiteId: {
+          courseId,
+          prerequisiteId,
+        },
+      },
+      include: {
+        course: true,
+        prerequisite: true,
+      },
+    });
+  }
 
   async findByCourse(courseId: number): Promise<CoursePrerequisite[]> {
     return this.prisma.coursePrerequisite.findMany({
@@ -25,9 +53,18 @@ export class CoursePrerequisiteRepositoryImpl implements CoursePrerequisiteRepos
     });
   }
 
-  async create(coursePrerequisite: CoursePrerequisite): Promise<CoursePrerequisite> {
+  async findCoursesWithPrerequisite(prerequisiteId: number): Promise<CoursePrerequisite[]> {
+    return this.prisma.coursePrerequisite.findMany({
+      where: { prerequisiteId },
+      include: {
+        course: true,
+      },
+    });
+  }
+
+  async create(coursePrerequisite: Partial<CoursePrerequisite>): Promise<CoursePrerequisite> {
     return this.prisma.coursePrerequisite.create({
-      data: coursePrerequisite,
+      data: coursePrerequisite as any,
       include: {
         course: true,
         prerequisite: true,
@@ -35,7 +72,31 @@ export class CoursePrerequisiteRepositoryImpl implements CoursePrerequisiteRepos
     });
   }
 
-  async delete(courseId: number, prerequisiteId: number): Promise<void> {
+  async update(id: number, coursePrerequisite: Partial<CoursePrerequisite>): Promise<CoursePrerequisite> {
+    // Usamos una convención: id es un número compuesto como courseId * 1000 + prerequisiteId
+    const courseId = Math.floor(id / 1000);
+    const prerequisiteId = id % 1000;
+
+    return this.prisma.coursePrerequisite.update({
+      where: {
+        courseId_prerequisiteId: {
+          courseId,
+          prerequisiteId,
+        },
+      },
+      data: coursePrerequisite as any,
+      include: {
+        course: true,
+        prerequisite: true,
+      },
+    });
+  }
+
+  async delete(id: number): Promise<void> {
+    // Usamos una convención: id es un número compuesto como courseId * 1000 + prerequisiteId
+    const courseId = Math.floor(id / 1000);
+    const prerequisiteId = id % 1000;
+
     await this.prisma.coursePrerequisite.delete({
       where: {
         courseId_prerequisiteId: {
@@ -43,6 +104,12 @@ export class CoursePrerequisiteRepositoryImpl implements CoursePrerequisiteRepos
           prerequisiteId,
         },
       },
+    });
+  }
+
+  async findCourseById(courseId: number): Promise<any> {
+    return this.prisma.course.findUnique({
+      where: { id: courseId },
     });
   }
 }

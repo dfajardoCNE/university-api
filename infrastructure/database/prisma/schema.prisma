@@ -215,13 +215,15 @@ model Role {
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
-  personId     Int       @unique
-  username     String    @unique @db.VarChar(50)
-  passwordHash String    @db.VarChar(255)
-  roleId       Int
-  createdAt    DateTime  @default(now())
-  lastLogin    DateTime?
+  id                  Int       @id @default(autoincrement())
+  personId            Int       @unique
+  username            String    @unique @db.VarChar(50)
+  passwordHash        String    @db.VarChar(255)
+  roleId              Int
+  resetPasswordToken  String?   @db.VarChar(255)
+  resetPasswordExpires DateTime?
+  createdAt           DateTime  @default(now())
+  lastLogin           DateTime?
   
   // Relaciones
   person       Person    @relation(fields: [personId], references: [id])
@@ -273,7 +275,10 @@ model Student {
   campusId       Int
   enrollmentDate DateTime  @default(now())
   status         String    @db.VarChar(20)
+  academicStatus String    @default("good_standing") @db.VarChar(20)
+  gpa            Float     @default(0.0)
   createdAt      DateTime  @default(now())
+  updatedAt      DateTime? @updatedAt
   
   // Relaciones
   person         Person    @relation(fields: [personId], references: [id])
@@ -282,6 +287,8 @@ model Student {
   sections       StudentSection[]
   submissions    Submission[]
   teacherRatings TeacherRating[]
+  payments       Payment[]
+  invoices       Invoice[]
 
   @@map("student")
 }
@@ -328,8 +335,11 @@ model StudentSection {
   id          Int       @id @default(autoincrement())
   studentId   Int
   sectionId   Int
-  grade       Float?
+  status      String    @default("active") @db.VarChar(20) // 'active', 'completed', 'dropped', 'failed'
+  currentGrade Float?
+  finalGrade  Float?
   createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
   
   // Relaciones
   student     Student   @relation(fields: [studentId], references: [id])
@@ -505,4 +515,43 @@ model Report {
   user        User      @relation("ReportedBy", fields: [reportedBy], references: [id])
 
   @@map("report")
+}
+
+// 9. SISTEMA DE PAGOS
+model Payment {
+  id              Int       @id @default(autoincrement())
+  studentId       Int
+  amount          Float
+  concept         String    @db.VarChar(100)
+  paymentDate     DateTime
+  status          String    @db.VarChar(20) // 'pending', 'completed', 'failed', 'refunded'
+  paymentMethod   String    @db.VarChar(50)
+  referenceNumber String?   @db.VarChar(100)
+  termId          Int?
+  description     String?   @db.Text
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime? @updatedAt
+  
+  // Relaciones
+  student         Student   @relation(fields: [studentId], references: [id])
+
+  @@map("payment")
+}
+
+model Invoice {
+  id          Int       @id @default(autoincrement())
+  studentId   Int
+  amount      Float
+  concept     String    @db.VarChar(100)
+  dueDate     DateTime
+  status      String    @db.VarChar(20) // 'pending', 'paid', 'overdue', 'cancelled'
+  termId      Int?
+  description String?   @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  
+  // Relaciones
+  student     Student   @relation(fields: [studentId], references: [id])
+
+  @@map("invoice")
 }

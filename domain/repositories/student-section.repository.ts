@@ -8,4 +8,9 @@ export interface StudentSectionRepository {
   create(studentSection: Partial<StudentSection>): Promise<StudentSection>;
   update(id: number, studentSection: Partial<StudentSection>): Promise<StudentSection>;
   delete(id: number): Promise<void>;
+  findByStudentAndSection(studentId: number, sectionId: number): Promise<StudentSection>;
+  countBySection(sectionId: number): Promise<number>;
+  findPassedSectionsByStudent(studentId: number): Promise<any[]>;
+  findCompletedSectionsByStudent(studentId: number, termId?: number): Promise<any[]>;
+  findCurrentSectionsByStudent(studentId: number): Promise<any[]>;
 }

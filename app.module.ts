@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './infrastructure/database/prisma/prisma.module';
-import { AuthModule } from './infrastructure/auth/auth.module';
+import { AuthModule as InfraAuthModule } from './infrastructure/auth/auth.module';
+import { AuthModule } from './interfaces/controllers/auth/auth.module';
+import { ServicesModule } from './infrastructure/services/services.module';
 import { UserModule } from './interfaces/controllers/user/user.module';
 import { FacultyModule } from './interfaces/controllers/faculty/faculty.module';
 import { DepartmentModule } from './interfaces/controllers/department/department.module';
@@ -32,6 +34,10 @@ import { UniversityModule } from './interfaces/controllers/university/university
 import { PersonModule } from './interfaces/controllers/person/person.module';
 import { RoleModule } from './interfaces/controllers/role/role.module';
 import { StudentSectionModule } from './interfaces/controllers/student-section/student-section.module';
+import { DashboardModule } from './interfaces/controllers/dashboard/dashboard.module';
+import { PaymentModule } from './interfaces/controllers/payment/payment.module';
+import { InvoiceModule } from './interfaces/controllers/invoice/invoice.module';
+import { AcademicModule } from './interfaces/controllers/student/academic.module';
 
 @Module({
   imports: [
@@ -39,7 +45,9 @@ import { StudentSectionModule } from './interfaces/controllers/student-section/s
       isGlobal: true,
     }),
     PrismaModule,
+    InfraAuthModule,
     AuthModule,
+    ServicesModule,
     UserModule,
     UniversityModule,
     FacultyModule,
@@ -70,6 +78,11 @@ import { StudentSectionModule } from './interfaces/controllers/student-section/s
     PersonModule,
     RoleModule,
     StudentSectionModule,
+    // Nuevos módulos para el MVP
+    DashboardModule,
+    PaymentModule,
+    InvoiceModule,
+    AcademicModule,
   ],
 })
 export class AppModule {}

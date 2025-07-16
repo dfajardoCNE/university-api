@@ -7,4 +7,5 @@ export interface ProfessorRepository {
   create(professor: Partial<Professor>): Promise<Professor>;
   update(id: number, professor: Partial<Professor>): Promise<Professor>;
   delete(id: number): Promise<void>;
+  count(): Promise<number>;
 }

@@ -10,4 +10,6 @@ export interface SubmissionRepository {
   create(submission: Partial<Submission>): Promise<Submission>;
   update(id: number, submission: Partial<Submission>): Promise<Submission>;
   delete(id: number): Promise<void>;
+  findPendingGradingBySection(sectionId: number): Promise<any[]>;
+  findPendingGradesByStudentAndSection(studentId: number, sectionId: number): Promise<any[]>;
 }
