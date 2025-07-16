@@ -6,20 +6,21 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import { CreateClassroomDto } from '../../../application/dto/classroom/create-classroom.dto';
 import { UpdateClassroomDto } from '../../../application/dto/classroom/update-classroom.dto';
 import { ClassroomResponseDto } from '../../../application/dto/classroom/classroom-response.dto';
+import { ClassroomMapper } from '../../../application/mappers/classroom.mapper';
 import { GetAllClassroomsUseCase } from '../../../domain/use-cases/classroom/get-all-classrooms.use-case';
 import { GetClassroomByIdUseCase } from '../../../domain/use-cases/classroom/get-classroom-by-id.use-case';
-import { GetClassroomsByBuildingUseCase } from '../../../domain/use-cases/classroom/get-classrooms-by-building.use-case';
+import { GetClassroomsByCampusUseCase } from '../../../domain/use-cases/classroom/get-classrooms-by-campus.use-case';
 import { CreateClassroomUseCase } from '../../../domain/use-cases/classroom/create-classroom.use-case';
 import { UpdateClassroomUseCase } from '../../../domain/use-cases/classroom/update-classroom.use-case';
 import { DeleteClassroomUseCase } from '../../../domain/use-cases/classroom/delete-classroom.use-case';
 
-@ApiTags('classrooms')
+@ApiTags('aulas')
 @Controller('classrooms')
 export class ClassroomController {
   constructor(
     private readonly getAllClassroomsUseCase: GetAllClassroomsUseCase,
     private readonly getClassroomByIdUseCase: GetClassroomByIdUseCase,
-    private readonly getClassroomsByBuildingUseCase: GetClassroomsByBuildingUseCase,
+    private readonly getClassroomsByCampusUseCase: GetClassroomsByCampusUseCase,
     private readonly createClassroomUseCase: CreateClassroomUseCase,
     private readonly updateClassroomUseCase: UpdateClassroomUseCase,
     private readonly deleteClassroomUseCase: DeleteClassroomUseCase,
@@ -28,11 +29,13 @@ export class ClassroomController {
   @Get()
   @ApiOperation({ summary: 'Obtener todas las aulas' })
   @ApiResponse({ status: 200, description: 'Lista de aulas', type: [ClassroomResponseDto] })
-  async findAll(@Query('buildingId') buildingId?: string): Promise<ClassroomResponseDto[]> {
-    if (buildingId) {
-      return this.getClassroomsByBuildingUseCase.execute(+buildingId);
+  async findAll(@Query('campusId') campusId?: string): Promise<ClassroomResponseDto[]> {
+    if (campusId) {
+      const classrooms = await this.getClassroomsByCampusUseCase.execute(+campusId);
+      return ClassroomMapper.toResponseDtoArray(classrooms);
     }
-    return this.getAllClassroomsUseCase.execute();
+    const classrooms = await this.getAllClassroomsUseCase.execute();
+    return ClassroomMapper.toResponseDtoArray(classrooms);
   }
 
   @Get(':id')
@@ -40,7 +43,8 @@ export class ClassroomController {
   @ApiResponse({ status: 200, description: 'Aula encontrada', type: ClassroomResponseDto })
   @ApiResponse({ status: 404, description: 'Aula no encontrada' })
   async findOne(@Param('id') id: string): Promise<ClassroomResponseDto> {
-    return this.getClassroomByIdUseCase.execute(+id);
+    const classroom = await this.getClassroomByIdUseCase.execute(+id);
+    return ClassroomMapper.toResponseDto(classroom);
   }
 
   @Post()
@@ -50,7 +54,8 @@ export class ClassroomController {
   @ApiOperation({ summary: 'Crear una nueva aula' })
   @ApiResponse({ status: 201, description: 'Aula creada', type: ClassroomResponseDto })
   async create(@Body() createClassroomDto: CreateClassroomDto): Promise<ClassroomResponseDto> {
-    return this.createClassroomUseCase.execute(createClassroomDto);
+    const classroom = await this.createClassroomUseCase.execute(createClassroomDto);
+    return ClassroomMapper.toResponseDto(classroom);
   }
 
   @Put(':id')
@@ -64,7 +69,8 @@ export class ClassroomController {
     @Param('id') id: string,
     @Body() updateClassroomDto: UpdateClassroomDto,
   ): Promise<ClassroomResponseDto> {
-    return this.updateClassroomUseCase.execute(+id, updateClassroomDto);
+    const classroom = await this.updateClassroomUseCase.execute(+id, updateClassroomDto);
+    return ClassroomMapper.toResponseDto(classroom);
   }
 
   @Delete(':id')

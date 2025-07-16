@@ -29,15 +29,17 @@ export class DepartmentRepositoryImpl implements DepartmentRepository {
   }
 
   async create(department: Partial<Department>): Promise<Department> {
+    const { id, ...data } = department;
     return this.prisma.department.create({
-      data: department,
+      data: data as any,
     });
   }
 
   async update(id: number, department: Partial<Department>): Promise<Department> {
+    const { id: _, ...data } = department;
     return this.prisma.department.update({
       where: { id },
-      data: department,
+      data: data as any,
     });
   }
 

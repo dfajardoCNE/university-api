@@ -13,7 +13,7 @@ import { CreateTermUseCase } from '../../../domain/use-cases/term/create-term.us
 import { UpdateTermUseCase } from '../../../domain/use-cases/term/update-term.use-case';
 import { DeleteTermUseCase } from '../../../domain/use-cases/term/delete-term.use-case';
 
-@ApiTags('terms')
+@ApiTags('periodos')
 @Controller('terms')
 export class TermController {
   constructor(

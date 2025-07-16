@@ -6,4 +6,5 @@ export interface PersonRepository {
   findByEmail(email: string): Promise<Person>;
   create(person: Partial<Person>): Promise<Person>;
   update(id: number, person: Partial<Person>): Promise<Person>;
+  delete(id: number): Promise<void>;
 }

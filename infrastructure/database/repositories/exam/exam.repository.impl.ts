@@ -45,8 +45,9 @@ export class ExamRepositoryImpl implements ExamRepository {
   }
 
   async create(exam: Partial<Exam>): Promise<Exam> {
+    const { id, ...data } = exam;
     return this.prisma.exam.create({
-      data: exam,
+      data: data as any,
       include: {
         course: true,
         professor: true,
@@ -55,9 +56,10 @@ export class ExamRepositoryImpl implements ExamRepository {
   }
 
   async update(id: number, exam: Partial<Exam>): Promise<Exam> {
+    const { id: _, ...data } = exam;
     return this.prisma.exam.update({
       where: { id },
-      data: exam,
+      data: data as any,
       include: {
         course: true,
         professor: true,

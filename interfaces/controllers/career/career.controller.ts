@@ -13,7 +13,7 @@ import { CreateCareerUseCase } from '../../../domain/use-cases/career/create-car
 import { UpdateCareerUseCase } from '../../../domain/use-cases/career/update-career.use-case';
 import { DeleteCareerUseCase } from '../../../domain/use-cases/career/delete-career.use-case';
 
-@ApiTags('careers')
+@ApiTags('carreras')
 @Controller('careers')
 export class CareerController {
   constructor(

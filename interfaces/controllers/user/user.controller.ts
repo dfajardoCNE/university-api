@@ -6,13 +6,14 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import { RegisterUserDto } from '../../../application/dto/user/register-user.dto';
 import { UpdateUserDto } from '../../../application/dto/user/update-user.dto';
 import { UserResponseDto } from '../../../application/dto/user/user-response.dto';
+import { UserMapper } from '../../../application/mappers/user.mapper';
 import { RegisterUserUseCase } from '../../../domain/use-cases/user/register-user.use-case';
 import { GetUserByIdUseCase } from '../../../domain/use-cases/user/get-user-by-id.use-case';
 import { GetAllUsersUseCase } from '../../../domain/use-cases/user/get-all-users.use-case';
 import { UpdateUserUseCase } from '../../../domain/use-cases/user/update-user.use-case';
 import { DeleteUserUseCase } from '../../../domain/use-cases/user/delete-user.use-case';
 
-@ApiTags('users')
+@ApiTags('autenticación')
 @Controller('users')
 export class UserController {
   constructor(
@@ -30,7 +31,8 @@ export class UserController {
   @ApiOperation({ summary: 'Obtener todos los usuarios' })
   @ApiResponse({ status: 200, description: 'Lista de usuarios', type: [UserResponseDto] })
   async findAll(): Promise<UserResponseDto[]> {
-    return this.getAllUsersUseCase.execute();
+    const users = await this.getAllUsersUseCase.execute();
+    return UserMapper.toResponseDtoArray(users);
   }
 
   @Get(':id')
@@ -40,7 +42,8 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'Usuario encontrado', type: UserResponseDto })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   async findOne(@Param('id') id: string): Promise<UserResponseDto> {
-    return this.getUserByIdUseCase.execute(+id);
+    const user = await this.getUserByIdUseCase.execute(+id);
+    return UserMapper.toResponseDto(user);
   }
 
   @Post()
@@ -50,7 +53,8 @@ export class UserController {
   @ApiOperation({ summary: 'Registrar un nuevo usuario' })
   @ApiResponse({ status: 201, description: 'Usuario registrado', type: UserResponseDto })
   async register(@Body() registerUserDto: RegisterUserDto): Promise<UserResponseDto> {
-    return this.registerUserUseCase.execute(registerUserDto);
+    const user = await this.registerUserUseCase.execute(registerUserDto);
+    return UserMapper.toResponseDto(user);
   }
 
   @Put(':id')
@@ -63,7 +67,8 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDto> {
-    return this.updateUserUseCase.execute(+id, updateUserDto);
+    const user = await this.updateUserUseCase.execute(+id, updateUserDto);
+    return UserMapper.toResponseDto(user);
   }
 
   @Delete(':id')

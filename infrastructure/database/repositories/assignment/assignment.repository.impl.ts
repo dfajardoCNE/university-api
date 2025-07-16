@@ -45,8 +45,9 @@ export class AssignmentRepositoryImpl implements AssignmentRepository {
   }
 
   async create(assignment: Partial<Assignment>): Promise<Assignment> {
+    const { id, ...data } = assignment;
     return this.prisma.assignment.create({
-      data: assignment,
+      data: data as any,
       include: {
         course: true,
         professor: true,
@@ -55,9 +56,10 @@ export class AssignmentRepositoryImpl implements AssignmentRepository {
   }
 
   async update(id: number, assignment: Partial<Assignment>): Promise<Assignment> {
+    const { id: _, ...data } = assignment;
     return this.prisma.assignment.update({
       where: { id },
-      data: assignment,
+      data: data as any,
       include: {
         course: true,
         professor: true,

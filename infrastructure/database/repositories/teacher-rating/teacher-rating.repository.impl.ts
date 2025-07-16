@@ -69,8 +69,9 @@ export class TeacherRatingRepositoryImpl implements TeacherRatingRepository {
   }
 
   async create(rating: Partial<TeacherRating>): Promise<TeacherRating> {
+    const { id, ...data } = rating;
     return this.prisma.teacherRating.create({
-      data: rating,
+      data: data as any,
       include: {
         student: {
           include: {
@@ -87,9 +88,10 @@ export class TeacherRatingRepositoryImpl implements TeacherRatingRepository {
   }
 
   async update(id: number, rating: Partial<TeacherRating>): Promise<TeacherRating> {
+    const { id: _, ...data } = rating;
     return this.prisma.teacherRating.update({
       where: { id },
-      data: rating,
+      data: data as any,
       include: {
         student: {
           include: {

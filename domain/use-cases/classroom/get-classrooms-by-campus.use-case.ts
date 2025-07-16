@@ -1,10 +1,10 @@
 import { Classroom } from '../../entities/classroom.entity';
 import { ClassroomRepository } from '../../repositories/classroom.repository';
 
-export class GetClassroomsByBuildingUseCase {
+export class GetClassroomsByCampusUseCase {
   constructor(private classroomRepository: ClassroomRepository) {}
 
-  async execute(buildingId: number): Promise<Classroom[]> {
-    return this.classroomRepository.findByBuilding(buildingId);
+  async execute(campusId: number): Promise<Classroom[]> {
+    return this.classroomRepository.findByCampus(campusId);
   }
 }

@@ -29,6 +29,9 @@ import { NotificationModule } from './interfaces/controllers/notification/notifi
 import { NotificationRecipientModule } from './interfaces/controllers/notification-recipient/notification-recipient.module';
 import { ReportModule } from './interfaces/controllers/report/report.module';
 import { UniversityModule } from './interfaces/controllers/university/university.module';
+import { PersonModule } from './interfaces/controllers/person/person.module';
+import { RoleModule } from './interfaces/controllers/role/role.module';
+import { StudentSectionModule } from './interfaces/controllers/student-section/student-section.module';
 
 @Module({
   imports: [
@@ -64,6 +67,9 @@ import { UniversityModule } from './interfaces/controllers/university/university
     NotificationModule,
     NotificationRecipientModule,
     ReportModule,
+    PersonModule,
+    RoleModule,
+    StudentSectionModule,
   ],
 })
 export class AppModule {}

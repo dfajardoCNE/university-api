@@ -20,15 +20,17 @@ export class UniversityRepositoryImpl implements UniversityRepository {
   }
 
   async create(university: Partial<University>): Promise<University> {
+    const { id, ...data } = university;
     return this.prisma.university.create({
-      data: university,
+      data: data as any,
     });
   }
 
   async update(id: number, university: Partial<University>): Promise<University> {
+    const { id: _, ...data } = university;
     return this.prisma.university.update({
       where: { id },
-      data: university,
+      data: data as any,
     });
   }
 

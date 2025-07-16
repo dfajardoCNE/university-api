@@ -30,15 +30,17 @@ export class CourseRepositoryImpl implements CourseRepository {
   }
 
   async create(course: Partial<Course>): Promise<Course> {
+    const { id, ...data } = course;
     return this.prisma.course.create({
-      data: course,
+      data: data as any,
     });
   }
 
   async update(id: number, course: Partial<Course>): Promise<Course> {
+    const { id: _, ...data } = course;
     return this.prisma.course.update({
       where: { id },
-      data: course,
+      data: data as any,
     });
   }
 

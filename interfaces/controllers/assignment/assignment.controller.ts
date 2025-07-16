@@ -13,7 +13,7 @@ import { CreateAssignmentUseCase } from '../../../domain/use-cases/assignment/cr
 import { UpdateAssignmentUseCase } from '../../../domain/use-cases/assignment/update-assignment.use-case';
 import { DeleteAssignmentUseCase } from '../../../domain/use-cases/assignment/delete-assignment.use-case';
 
-@ApiTags('assignments')
+@ApiTags('tareas')
 @Controller('assignments')
 export class AssignmentController {
   constructor(

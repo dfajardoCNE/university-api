@@ -66,8 +66,9 @@ export class PostRepositoryImpl implements PostRepository {
   }
 
   async create(post: Partial<Post>): Promise<Post> {
+    const { id, ...data } = post;
     return this.prisma.post.create({
-      data: post,
+      data: data as any,
       include: {
         user: {
           include: {
@@ -80,12 +81,13 @@ export class PostRepositoryImpl implements PostRepository {
   }
 
   async update(id: number, post: Partial<Post>): Promise<Post> {
+    const { id: _, ...data } = post;
     return this.prisma.post.update({
       where: { id },
       data: {
-        ...post,
+        ...data,
         updatedAt: new Date(),
-      },
+      } as any,
       include: {
         user: {
           include: {

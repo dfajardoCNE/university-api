@@ -71,8 +71,9 @@ export class ApplicationRepositoryImpl implements ApplicationRepository {
   }
 
   async create(application: Partial<Application>): Promise<Application> {
+    const { id, ...data } = application;
     return this.prisma.application.create({
-      data: application,
+      data: data as any,
       include: {
         person: true,
         career: true,
@@ -81,9 +82,10 @@ export class ApplicationRepositoryImpl implements ApplicationRepository {
   }
 
   async update(id: number, application: Partial<Application>): Promise<Application> {
+    const { id: _, ...data } = application;
     return this.prisma.application.update({
       where: { id },
-      data: application,
+      data: data as any,
       include: {
         person: true,
         career: true,

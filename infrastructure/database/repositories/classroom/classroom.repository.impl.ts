@@ -8,47 +8,33 @@ export class ClassroomRepositoryImpl implements ClassroomRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(): Promise<Classroom[]> {
-    return this.prisma.classroom.findMany({
-      include: {
-        building: true,
-      },
-    });
+    return this.prisma.classroom.findMany();
   }
 
   async findById(id: number): Promise<Classroom> {
     return this.prisma.classroom.findUnique({
       where: { id },
-      include: {
-        building: true,
-      },
     });
   }
 
-  async findByBuilding(buildingId: number): Promise<Classroom[]> {
+  async findByCampus(campusId: number): Promise<Classroom[]> {
     return this.prisma.classroom.findMany({
-      where: { buildingId },
-      include: {
-        building: true,
-      },
+      where: { campusId },
     });
   }
 
   async create(classroom: Partial<Classroom>): Promise<Classroom> {
+    const { id, ...data } = classroom;
     return this.prisma.classroom.create({
-      data: classroom,
-      include: {
-        building: true,
-      },
+      data: data as any,
     });
   }
 
   async update(id: number, classroom: Partial<Classroom>): Promise<Classroom> {
+    const { id: _, ...data } = classroom;
     return this.prisma.classroom.update({
       where: { id },
-      data: classroom,
-      include: {
-        building: true,
-      },
+      data: data as any,
     });
   }
 

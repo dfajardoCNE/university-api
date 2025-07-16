@@ -6,6 +6,7 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import { CreateProfessorDto } from '../../../application/dto/professor/create-professor.dto';
 import { UpdateProfessorDto } from '../../../application/dto/professor/update-professor.dto';
 import { ProfessorResponseDto } from '../../../application/dto/professor/professor-response.dto';
+import { ProfessorMapper } from '../../../application/mappers/professor.mapper';
 import { GetAllProfessorsUseCase } from '../../../domain/use-cases/professor/get-all-professors.use-case';
 import { GetProfessorByIdUseCase } from '../../../domain/use-cases/professor/get-professor-by-id.use-case';
 import { CreateProfessorUseCase } from '../../../domain/use-cases/professor/create-professor.use-case';
@@ -30,7 +31,8 @@ export class ProfessorController {
   @ApiOperation({ summary: 'Obtener todos los profesores' })
   @ApiResponse({ status: 200, description: 'Lista de profesores', type: [ProfessorResponseDto] })
   async findAll(): Promise<ProfessorResponseDto[]> {
-    return this.getAllProfessorsUseCase.execute();
+    const professors = await this.getAllProfessorsUseCase.execute();
+    return ProfessorMapper.toResponseDtoArray(professors);
   }
 
   @Get(':id')
@@ -40,7 +42,8 @@ export class ProfessorController {
   @ApiResponse({ status: 200, description: 'Profesor encontrado', type: ProfessorResponseDto })
   @ApiResponse({ status: 404, description: 'Profesor no encontrado' })
   async findOne(@Param('id') id: string): Promise<ProfessorResponseDto> {
-    return this.getProfessorByIdUseCase.execute(+id);
+    const professor = await this.getProfessorByIdUseCase.execute(+id);
+    return ProfessorMapper.toResponseDto(professor);
   }
 
   @Post()
@@ -50,7 +53,8 @@ export class ProfessorController {
   @ApiOperation({ summary: 'Crear un nuevo profesor' })
   @ApiResponse({ status: 201, description: 'Profesor creado', type: ProfessorResponseDto })
   async create(@Body() createProfessorDto: CreateProfessorDto): Promise<ProfessorResponseDto> {
-    return this.createProfessorUseCase.execute(createProfessorDto);
+    const professor = await this.createProfessorUseCase.execute(createProfessorDto);
+    return ProfessorMapper.toResponseDto(professor);
   }
 
   @Put(':id')
@@ -64,7 +68,8 @@ export class ProfessorController {
     @Param('id') id: string,
     @Body() updateProfessorDto: UpdateProfessorDto,
   ): Promise<ProfessorResponseDto> {
-    return this.updateProfessorUseCase.execute(+id, updateProfessorDto);
+    const professor = await this.updateProfessorUseCase.execute(+id, updateProfessorDto);
+    return ProfessorMapper.toResponseDto(professor);
   }
 
   @Delete(':id')

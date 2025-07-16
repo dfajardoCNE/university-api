@@ -1,9 +1,9 @@
 export class Classroom {
   id: number;
-  buildingId: number;
+  campusId: number;
   name: string;
   capacity: number;
-  hasProjector: boolean;
-  hasComputers: boolean;
   createdAt: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
 }

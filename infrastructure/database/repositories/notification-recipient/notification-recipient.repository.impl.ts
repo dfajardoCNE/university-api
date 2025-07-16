@@ -40,8 +40,9 @@ export class NotificationRecipientRepositoryImpl implements NotificationRecipien
   }
 
   async create(recipient: Partial<NotificationRecipient>): Promise<NotificationRecipient> {
+    const { id, ...data } = recipient;
     return this.prisma.notificationRecipient.create({
-      data: recipient,
+      data: data as any,
       include: {
         notification: true,
         user: {

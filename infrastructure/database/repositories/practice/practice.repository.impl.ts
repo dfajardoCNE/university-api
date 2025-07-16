@@ -45,8 +45,9 @@ export class PracticeRepositoryImpl implements PracticeRepository {
   }
 
   async create(practice: Partial<Practice>): Promise<Practice> {
+    const { id, ...data } = practice;
     return this.prisma.practice.create({
-      data: practice,
+      data: data as any,
       include: {
         course: true,
         professor: true,
@@ -55,9 +56,10 @@ export class PracticeRepositoryImpl implements PracticeRepository {
   }
 
   async update(id: number, practice: Partial<Practice>): Promise<Practice> {
+    const { id: _, ...data } = practice;
     return this.prisma.practice.update({
       where: { id },
-      data: practice,
+      data: data as any,
       include: {
         course: true,
         professor: true,

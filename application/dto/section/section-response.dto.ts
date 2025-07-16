@@ -2,45 +2,34 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CourseResponseDto } from '../course/course-response.dto';
 import { ProfessorResponseDto } from '../professor/professor-response.dto';
 
-export class ClassroomDto {
-  @ApiProperty({ description: 'ID del aula' })
-  id: number;
-
-  @ApiProperty({ description: 'Nombre o número del aula' })
-  name: string;
-
-  @ApiProperty({ description: 'Capacidad del aula' })
-  capacity: number;
-
-  @ApiProperty({ description: 'ID del edificio donde se encuentra el aula' })
-  buildingId: number;
-}
-
 export class SectionResponseDto {
   @ApiProperty({ description: 'ID de la sección' })
   id: number;
 
-  @ApiProperty({ description: 'Semestre académico' })
-  semester: string;
+  @ApiProperty({ description: 'ID del curso' })
+  courseId: number;
 
-  @ApiProperty({ description: 'Horario de la sección' })
-  schedule: string;
+  @ApiProperty({ description: 'ID del término' })
+  termId: number;
 
-  @ApiProperty({ description: 'Capacidad máxima de estudiantes' })
-  capacity: number;
+  @ApiProperty({ description: 'ID del horario de sesión' })
+  sessionTimeId: number;
 
-  @ApiProperty({ description: 'Número de estudiantes inscritos' })
-  enrolledCount: number;
+  @ApiProperty({ description: 'ID del profesor' })
+  professorId: number;
+
+  @ApiProperty({ description: 'ID del aula' })
+  classroomId: number;
 
   @ApiProperty({ description: 'Fecha de creación' })
   createdAt: Date;
 
-  @ApiProperty({ description: 'Información del curso' })
-  course: CourseResponseDto;
+  @ApiProperty({ description: 'Información del curso', required: false })
+  course?: CourseResponseDto;
 
-  @ApiProperty({ description: 'Información del profesor' })
-  professor: ProfessorResponseDto;
+  @ApiProperty({ description: 'Información del profesor', required: false })
+  professor?: ProfessorResponseDto;
 
-  @ApiProperty({ description: 'Información del aula' })
-  classroom: ClassroomDto;
+  @ApiProperty({ description: 'Información del aula', required: false })
+  classroom?: any;
 }

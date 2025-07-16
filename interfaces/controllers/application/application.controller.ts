@@ -14,7 +14,7 @@ import { CreateApplicationUseCase } from '../../../domain/use-cases/application/
 import { UpdateApplicationUseCase } from '../../../domain/use-cases/application/update-application.use-case';
 import { DeleteApplicationUseCase } from '../../../domain/use-cases/application/delete-application.use-case';
 
-@ApiTags('applications')
+@ApiTags('solicitudes')
 @Controller('applications')
 export class ApplicationController {
   constructor(

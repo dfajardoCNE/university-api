@@ -14,7 +14,7 @@ import { CreateSubmissionUseCase } from '../../../domain/use-cases/submission/cr
 import { UpdateSubmissionUseCase } from '../../../domain/use-cases/submission/update-submission.use-case';
 import { DeleteSubmissionUseCase } from '../../../domain/use-cases/submission/delete-submission.use-case';
 
-@ApiTags('submissions')
+@ApiTags('entregas')
 @Controller('submissions')
 export class SubmissionController {
   constructor(

@@ -5,8 +5,6 @@ export class Exam {
   title: string;
   description?: string;
   examDate: Date;
-  duration: number;
-  totalPoints: number;
+  weight: number;
   createdAt: Date;
-  updatedAt?: Date;
 }

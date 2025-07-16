@@ -10,7 +10,7 @@ import { GetDocumentByIdUseCase } from '../../../domain/use-cases/application-do
 import { CreateDocumentUseCase } from '../../../domain/use-cases/application-document/create-document.use-case';
 import { DeleteDocumentUseCase } from '../../../domain/use-cases/application-document/delete-document.use-case';
 
-@ApiTags('application-documents')
+@ApiTags('documentos')
 @Controller('application-documents')
 export class ApplicationDocumentController {
   constructor(

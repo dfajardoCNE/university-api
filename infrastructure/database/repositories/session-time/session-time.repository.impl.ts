@@ -30,15 +30,17 @@ export class SessionTimeRepositoryImpl implements SessionTimeRepository {
   }
 
   async create(sessionTime: Partial<SessionTime>): Promise<SessionTime> {
+    const { id, ...data } = sessionTime;
     return this.prisma.sessionTime.create({
-      data: sessionTime,
+      data: data as any,
     });
   }
 
   async update(id: number, sessionTime: Partial<SessionTime>): Promise<SessionTime> {
+    const { id: _, ...data } = sessionTime;
     return this.prisma.sessionTime.update({
       where: { id },
-      data: sessionTime,
+      data: data as any,
     });
   }
 

@@ -3,7 +3,7 @@ import { ClassroomController } from './classroom.controller';
 import { ClassroomRepositoryImpl } from '../../../infrastructure/database/repositories/classroom/classroom.repository.impl';
 import { GetAllClassroomsUseCase } from '../../../domain/use-cases/classroom/get-all-classrooms.use-case';
 import { GetClassroomByIdUseCase } from '../../../domain/use-cases/classroom/get-classroom-by-id.use-case';
-import { GetClassroomsByBuildingUseCase } from '../../../domain/use-cases/classroom/get-classrooms-by-building.use-case';
+import { GetClassroomsByCampusUseCase } from '../../../domain/use-cases/classroom/get-classrooms-by-campus.use-case';
 import { CreateClassroomUseCase } from '../../../domain/use-cases/classroom/create-classroom.use-case';
 import { UpdateClassroomUseCase } from '../../../domain/use-cases/classroom/update-classroom.use-case';
 import { DeleteClassroomUseCase } from '../../../domain/use-cases/classroom/delete-classroom.use-case';
@@ -26,8 +26,8 @@ import { DeleteClassroomUseCase } from '../../../domain/use-cases/classroom/dele
       inject: ['ClassroomRepository'],
     },
     {
-      provide: GetClassroomsByBuildingUseCase,
-      useFactory: (classroomRepository) => new GetClassroomsByBuildingUseCase(classroomRepository),
+      provide: GetClassroomsByCampusUseCase,
+      useFactory: (classroomRepository) => new GetClassroomsByCampusUseCase(classroomRepository),
       inject: ['ClassroomRepository'],
     },
     {

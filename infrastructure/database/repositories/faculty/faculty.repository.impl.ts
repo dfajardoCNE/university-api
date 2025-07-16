@@ -29,15 +29,17 @@ export class FacultyRepositoryImpl implements FacultyRepository {
   }
 
   async create(faculty: Partial<Faculty>): Promise<Faculty> {
+    const { id, ...data } = faculty;
     return this.prisma.faculty.create({
-      data: faculty,
+      data: data as any,
     });
   }
 
   async update(id: number, faculty: Partial<Faculty>): Promise<Faculty> {
+    const { id: _, ...data } = faculty;
     return this.prisma.faculty.update({
       where: { id },
-      data: faculty,
+      data: data as any,
     });
   }
 

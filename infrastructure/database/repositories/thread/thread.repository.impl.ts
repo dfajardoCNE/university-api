@@ -61,8 +61,9 @@ export class ThreadRepositoryImpl implements ThreadRepository {
   }
 
   async create(thread: Partial<Thread>): Promise<Thread> {
+    const { id, ...data } = thread;
     return this.prisma.thread.create({
-      data: thread,
+      data: data as any,
       include: {
         user: {
           include: {
@@ -74,12 +75,13 @@ export class ThreadRepositoryImpl implements ThreadRepository {
   }
 
   async update(id: number, thread: Partial<Thread>): Promise<Thread> {
+    const { id: _, ...data } = thread;
     return this.prisma.thread.update({
       where: { id },
       data: {
-        ...thread,
+        ...data,
         updatedAt: new Date(),
-      },
+      } as any,
       include: {
         user: {
           include: {

@@ -50,9 +50,9 @@ export class SectionRepositoryImpl implements SectionRepository {
     });
   }
 
-  async findBySemester(semester: string): Promise<Section[]> {
+  async findByTerm(termId: number): Promise<Section[]> {
     return this.prisma.section.findMany({
-      where: { semester },
+      where: { termId },
       include: {
         course: true,
         professor: true,
@@ -62,8 +62,9 @@ export class SectionRepositoryImpl implements SectionRepository {
   }
 
   async create(section: Partial<Section>): Promise<Section> {
+    const { id, ...data } = section;
     return this.prisma.section.create({
-      data: section,
+      data: data as any,
       include: {
         course: true,
         professor: true,
@@ -73,9 +74,10 @@ export class SectionRepositoryImpl implements SectionRepository {
   }
 
   async update(id: number, section: Partial<Section>): Promise<Section> {
+    const { id: _, ...data } = section;
     return this.prisma.section.update({
       where: { id },
-      data: section,
+      data: data as any,
       include: {
         course: true,
         professor: true,

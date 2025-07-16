@@ -6,6 +6,7 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import { CreateExamDto } from '../../../application/dto/exam/create-exam.dto';
 import { UpdateExamDto } from '../../../application/dto/exam/update-exam.dto';
 import { ExamResponseDto } from '../../../application/dto/exam/exam-response.dto';
+import { ExamMapper } from '../../../application/mappers/exam.mapper';
 import { GetAllExamsUseCase } from '../../../domain/use-cases/exam/get-all-exams.use-case';
 import { GetExamByIdUseCase } from '../../../domain/use-cases/exam/get-exam-by-id.use-case';
 import { GetExamsByCourseUseCase } from '../../../domain/use-cases/exam/get-exams-by-course.use-case';
@@ -14,7 +15,7 @@ import { CreateExamUseCase } from '../../../domain/use-cases/exam/create-exam.us
 import { UpdateExamUseCase } from '../../../domain/use-cases/exam/update-exam.use-case';
 import { DeleteExamUseCase } from '../../../domain/use-cases/exam/delete-exam.use-case';
 
-@ApiTags('exams')
+@ApiTags('exámenes')
 @Controller('exams')
 export class ExamController {
   constructor(
@@ -36,13 +37,15 @@ export class ExamController {
     @Query('courseId') courseId?: string,
     @Query('professorId') professorId?: string,
   ): Promise<ExamResponseDto[]> {
+    let exams;
     if (courseId) {
-      return this.getExamsByCourseUseCase.execute(+courseId);
+      exams = await this.getExamsByCourseUseCase.execute(+courseId);
+    } else if (professorId) {
+      exams = await this.getExamsByProfessorUseCase.execute(+professorId);
+    } else {
+      exams = await this.getAllExamsUseCase.execute();
     }
-    if (professorId) {
-      return this.getExamsByProfessorUseCase.execute(+professorId);
-    }
-    return this.getAllExamsUseCase.execute();
+    return ExamMapper.toResponseDtoArray(exams);
   }
 
   @Get(':id')
@@ -52,7 +55,8 @@ export class ExamController {
   @ApiResponse({ status: 200, description: 'Examen encontrado', type: ExamResponseDto })
   @ApiResponse({ status: 404, description: 'Examen no encontrado' })
   async findOne(@Param('id') id: string): Promise<ExamResponseDto> {
-    return this.getExamByIdUseCase.execute(+id);
+    const exam = await this.getExamByIdUseCase.execute(+id);
+    return ExamMapper.toResponseDto(exam);
   }
 
   @Post()
@@ -62,7 +66,8 @@ export class ExamController {
   @ApiOperation({ summary: 'Crear un nuevo examen' })
   @ApiResponse({ status: 201, description: 'Examen creado', type: ExamResponseDto })
   async create(@Body() createExamDto: CreateExamDto): Promise<ExamResponseDto> {
-    return this.createExamUseCase.execute(createExamDto);
+    const exam = await this.createExamUseCase.execute(createExamDto);
+    return ExamMapper.toResponseDto(exam);
   }
 
   @Put(':id')
@@ -76,7 +81,8 @@ export class ExamController {
     @Param('id') id: string,
     @Body() updateExamDto: UpdateExamDto,
   ): Promise<ExamResponseDto> {
-    return this.updateExamUseCase.execute(+id, updateExamDto);
+    const exam = await this.updateExamUseCase.execute(+id, updateExamDto);
+    return ExamMapper.toResponseDto(exam);
   }
 
   @Delete(':id')

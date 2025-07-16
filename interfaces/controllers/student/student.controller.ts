@@ -6,6 +6,7 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import { CreateStudentDto } from '../../../application/dto/student/create-student.dto';
 import { UpdateStudentDto } from '../../../application/dto/student/update-student.dto';
 import { StudentResponseDto } from '../../../application/dto/student/student-response.dto';
+import { StudentMapper } from '../../../application/mappers/student.mapper';
 import { GetAllStudentsUseCase } from '../../../domain/use-cases/student/get-all-students.use-case';
 import { GetStudentByIdUseCase } from '../../../domain/use-cases/student/get-student-by-id.use-case';
 import { GetStudentsByCareerUseCase } from '../../../domain/use-cases/student/get-students-by-career.use-case';
@@ -32,10 +33,13 @@ export class StudentController {
   @ApiOperation({ summary: 'Obtener todos los estudiantes' })
   @ApiResponse({ status: 200, description: 'Lista de estudiantes', type: [StudentResponseDto] })
   async findAll(@Query('careerId') careerId?: string): Promise<StudentResponseDto[]> {
+    let students;
     if (careerId) {
-      return this.getStudentsByCareerUseCase.execute(+careerId);
+      students = await this.getStudentsByCareerUseCase.execute(+careerId);
+    } else {
+      students = await this.getAllStudentsUseCase.execute();
     }
-    return this.getAllStudentsUseCase.execute();
+    return StudentMapper.toResponseDtoArray(students);
   }
 
   @Get(':id')
@@ -45,7 +49,8 @@ export class StudentController {
   @ApiResponse({ status: 200, description: 'Estudiante encontrado', type: StudentResponseDto })
   @ApiResponse({ status: 404, description: 'Estudiante no encontrado' })
   async findOne(@Param('id') id: string): Promise<StudentResponseDto> {
-    return this.getStudentByIdUseCase.execute(+id);
+    const student = await this.getStudentByIdUseCase.execute(+id);
+    return StudentMapper.toResponseDto(student);
   }
 
   @Post()
@@ -55,7 +60,8 @@ export class StudentController {
   @ApiOperation({ summary: 'Crear un nuevo estudiante' })
   @ApiResponse({ status: 201, description: 'Estudiante creado', type: StudentResponseDto })
   async create(@Body() createStudentDto: CreateStudentDto): Promise<StudentResponseDto> {
-    return this.createStudentUseCase.execute(createStudentDto);
+    const student = await this.createStudentUseCase.execute(createStudentDto);
+    return StudentMapper.toResponseDto(student);
   }
 
   @Put(':id')
@@ -69,7 +75,8 @@ export class StudentController {
     @Param('id') id: string,
     @Body() updateStudentDto: UpdateStudentDto,
   ): Promise<StudentResponseDto> {
-    return this.updateStudentUseCase.execute(+id, updateStudentDto);
+    const student = await this.updateStudentUseCase.execute(+id, updateStudentDto);
+    return StudentMapper.toResponseDto(student);
   }
 
   @Delete(':id')

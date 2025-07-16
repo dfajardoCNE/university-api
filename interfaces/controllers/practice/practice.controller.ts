@@ -13,7 +13,7 @@ import { CreatePracticeUseCase } from '../../../domain/use-cases/practice/create
 import { UpdatePracticeUseCase } from '../../../domain/use-cases/practice/update-practice.use-case';
 import { DeletePracticeUseCase } from '../../../domain/use-cases/practice/delete-practice.use-case';
 
-@ApiTags('practices')
+@ApiTags('prácticas')
 @Controller('practices')
 export class PracticeController {
   constructor(

@@ -34,8 +34,9 @@ export class CareerRepositoryImpl implements CareerRepository {
   }
 
   async create(career: Partial<Career>): Promise<Career> {
+    const { id, ...data } = career;
     return this.prisma.career.create({
-      data: career,
+      data: data as any,
       include: {
         department: true,
       },
@@ -43,9 +44,10 @@ export class CareerRepositoryImpl implements CareerRepository {
   }
 
   async update(id: number, career: Partial<Career>): Promise<Career> {
+    const { id: _, ...data } = career;
     return this.prisma.career.update({
       where: { id },
-      data: career,
+      data: data as any,
       include: {
         department: true,
       },

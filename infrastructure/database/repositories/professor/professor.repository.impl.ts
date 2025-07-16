@@ -34,8 +34,9 @@ export class ProfessorRepositoryImpl implements ProfessorRepository {
   }
 
   async create(professor: Partial<Professor>): Promise<Professor> {
+    const { id, ...data } = professor;
     return this.prisma.professor.create({
-      data: professor,
+      data: data as any,
       include: {
         person: true,
       },
@@ -43,9 +44,10 @@ export class ProfessorRepositoryImpl implements ProfessorRepository {
   }
 
   async update(id: number, professor: Partial<Professor>): Promise<Professor> {
+    const { id: _, ...data } = professor;
     return this.prisma.professor.update({
       where: { id },
-      data: professor,
+      data: data as any,
       include: {
         person: true,
       },

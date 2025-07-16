@@ -10,7 +10,7 @@ import { GetCoursesByPrerequisiteUseCase } from '../../../domain/use-cases/cours
 import { CreateCoursePrerequisiteUseCase } from '../../../domain/use-cases/course-prerequisite/create-course-prerequisite.use-case';
 import { DeleteCoursePrerequisiteUseCase } from '../../../domain/use-cases/course-prerequisite/delete-course-prerequisite.use-case';
 
-@ApiTags('course-prerequisites')
+@ApiTags('prerrequisitos')
 @Controller('course-prerequisites')
 export class CoursePrerequisiteController {
   constructor(

@@ -22,4 +22,18 @@ export class RoleRepositoryImpl implements RoleRepository {
       where: { name },
     });
   }
+
+  async create(role: Partial<Role>): Promise<Role> {
+    const { id, ...data } = role;
+    return this.prisma.role.create({ data: data as any });
+  }
+
+  async update(id: number, role: Partial<Role>): Promise<Role> {
+    const { id: _, ...data } = role;
+    return this.prisma.role.update({ where: { id }, data: data as any });
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.prisma.role.delete({ where: { id } });
+  }
 }

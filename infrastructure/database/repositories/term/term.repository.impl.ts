@@ -36,15 +36,17 @@ export class TermRepositoryImpl implements TermRepository {
   }
 
   async create(term: Partial<Term>): Promise<Term> {
+    const { id, ...data } = term;
     return this.prisma.term.create({
-      data: term,
+      data: data as any,
     });
   }
 
   async update(id: number, term: Partial<Term>): Promise<Term> {
+    const { id: _, ...data } = term;
     return this.prisma.term.update({
       where: { id },
-      data: term,
+      data: data as any,
     });
   }
 

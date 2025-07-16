@@ -74,8 +74,9 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   async create(notification: Partial<Notification>): Promise<Notification> {
+    const { id, ...data } = notification;
     return this.prisma.notification.create({
-      data: notification,
+      data: data as any,
       include: {
         user: {
           include: {
@@ -87,9 +88,10 @@ export class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   async update(id: number, notification: Partial<Notification>): Promise<Notification> {
+    const { id: _, ...data } = notification;
     return this.prisma.notification.update({
       where: { id },
-      data: notification,
+      data: data as any,
       include: {
         user: {
           include: {

@@ -69,8 +69,9 @@ export class SubmissionRepositoryImpl implements SubmissionRepository {
   }
 
   async create(submission: Partial<Submission>): Promise<Submission> {
+    const { id, ...data } = submission;
     return this.prisma.submission.create({
-      data: submission,
+      data: data as any,
       include: {
         student: true,
         exam: true,
@@ -81,9 +82,10 @@ export class SubmissionRepositoryImpl implements SubmissionRepository {
   }
 
   async update(id: number, submission: Partial<Submission>): Promise<Submission> {
+    const { id: _, ...data } = submission;
     return this.prisma.submission.update({
       where: { id },
-      data: submission,
+      data: data as any,
       include: {
         student: true,
         exam: true,

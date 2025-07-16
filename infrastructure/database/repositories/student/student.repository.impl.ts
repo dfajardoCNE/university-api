@@ -62,8 +62,9 @@ export class StudentRepositoryImpl implements StudentRepository {
   }
 
   async create(student: Partial<Student>): Promise<Student> {
+    const { id, ...data } = student;
     return this.prisma.student.create({
-      data: student,
+      data: data as any,
       include: {
         person: true,
         career: true,
@@ -73,9 +74,10 @@ export class StudentRepositoryImpl implements StudentRepository {
   }
 
   async update(id: number, student: Partial<Student>): Promise<Student> {
+    const { id: _, ...data } = student;
     return this.prisma.student.update({
       where: { id },
-      data: student,
+      data: data as any,
       include: {
         person: true,
         career: true,

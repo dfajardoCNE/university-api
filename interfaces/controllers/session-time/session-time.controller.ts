@@ -13,7 +13,7 @@ import { CreateSessionTimeUseCase } from '../../../domain/use-cases/session-time
 import { UpdateSessionTimeUseCase } from '../../../domain/use-cases/session-time/update-session-time.use-case';
 import { DeleteSessionTimeUseCase } from '../../../domain/use-cases/session-time/delete-session-time.use-case';
 
-@ApiTags('session-times')
+@ApiTags('horarios')
 @Controller('session-times')
 export class SessionTimeController {
   constructor(

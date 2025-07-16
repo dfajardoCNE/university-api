@@ -18,4 +18,11 @@ export class AuthController {
   async login(@Body() loginDto: LoginDto): Promise<AuthResponseDto> {
     return this.authService.login(loginDto);
   }
+
+  @Post('logout')
+  @ApiOperation({ summary: 'Cerrar sesión' })
+  @ApiResponse({ status: 200, description: 'Logout exitoso' })
+  async logout(): Promise<{ message: string }> {
+    return { message: 'Sesión cerrada exitosamente' };
+  }
 }

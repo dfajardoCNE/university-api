@@ -11,7 +11,7 @@ import { GetCareerCampusesByCampusUseCase } from '../../../domain/use-cases/care
 import { CreateCareerCampusUseCase } from '../../../domain/use-cases/career-campus/create-career-campus.use-case';
 import { DeleteCareerCampusUseCase } from '../../../domain/use-cases/career-campus/delete-career-campus.use-case';
 
-@ApiTags('career-campuses')
+@ApiTags('carreras')
 @Controller('career-campuses')
 export class CareerCampusController {
   constructor(

@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class BuildingDto {
-  @ApiProperty({ description: 'ID del edificio' })
+export class CampusDto {
+  @ApiProperty({ description: 'ID del campus' })
   id: number;
 
-  @ApiProperty({ description: 'Nombre del edificio' })
+  @ApiProperty({ description: 'Nombre del campus' })
   name: string;
 
-  @ApiProperty({ description: 'ID del campus donde se encuentra el edificio' })
-  campusId: number;
+  @ApiProperty({ description: 'Ubicación del campus' })
+  location?: string;
 }
 
 export class ClassroomResponseDto {
@@ -21,15 +21,15 @@ export class ClassroomResponseDto {
   @ApiProperty({ description: 'Capacidad del aula' })
   capacity: number;
 
-  @ApiProperty({ description: 'Indica si el aula tiene proyector' })
-  hasProjector: boolean;
-
-  @ApiProperty({ description: 'Indica si el aula tiene computadoras' })
-  hasComputers: boolean;
+  @ApiProperty({ description: 'ID del campus' })
+  campusId: number;
 
   @ApiProperty({ description: 'Fecha de creación' })
   createdAt: Date;
 
-  @ApiProperty({ description: 'Información del edificio' })
-  building: BuildingDto;
+  @ApiProperty({ description: 'Fecha de actualización', required: false })
+  updatedAt?: Date;
+
+  @ApiProperty({ description: 'Fecha de eliminación', required: false })
+  deletedAt?: Date;
 }

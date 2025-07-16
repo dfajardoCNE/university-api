@@ -6,6 +6,7 @@ import { Roles } from '../../../shared/decorators/roles.decorator';
 import { CreateSectionDto } from '../../../application/dto/section/create-section.dto';
 import { UpdateSectionDto } from '../../../application/dto/section/update-section.dto';
 import { SectionResponseDto } from '../../../application/dto/section/section-response.dto';
+import { SectionMapper } from '../../../application/mappers/section.mapper';
 import { GetAllSectionsUseCase } from '../../../domain/use-cases/section/get-all-sections.use-case';
 import { GetSectionByIdUseCase } from '../../../domain/use-cases/section/get-section-by-id.use-case';
 import { GetSectionsByCourseUseCase } from '../../../domain/use-cases/section/get-sections-by-course.use-case';
@@ -14,7 +15,7 @@ import { CreateSectionUseCase } from '../../../domain/use-cases/section/create-s
 import { UpdateSectionUseCase } from '../../../domain/use-cases/section/update-section.use-case';
 import { DeleteSectionUseCase } from '../../../domain/use-cases/section/delete-section.use-case';
 
-@ApiTags('sections')
+@ApiTags('secciones')
 @Controller('sections')
 export class SectionController {
   constructor(
@@ -34,13 +35,15 @@ export class SectionController {
     @Query('courseId') courseId?: string,
     @Query('professorId') professorId?: string,
   ): Promise<SectionResponseDto[]> {
+    let sections;
     if (courseId) {
-      return this.getSectionsByCourseUseCase.execute(+courseId);
+      sections = await this.getSectionsByCourseUseCase.execute(+courseId);
+    } else if (professorId) {
+      sections = await this.getSectionsByProfessorUseCase.execute(+professorId);
+    } else {
+      sections = await this.getAllSectionsUseCase.execute();
     }
-    if (professorId) {
-      return this.getSectionsByProfessorUseCase.execute(+professorId);
-    }
-    return this.getAllSectionsUseCase.execute();
+    return SectionMapper.toResponseDtoArray(sections);
   }
 
   @Get(':id')
@@ -48,7 +51,8 @@ export class SectionController {
   @ApiResponse({ status: 200, description: 'Sección encontrada', type: SectionResponseDto })
   @ApiResponse({ status: 404, description: 'Sección no encontrada' })
   async findOne(@Param('id') id: string): Promise<SectionResponseDto> {
-    return this.getSectionByIdUseCase.execute(+id);
+    const section = await this.getSectionByIdUseCase.execute(+id);
+    return SectionMapper.toResponseDto(section);
   }
 
   @Post()
@@ -58,10 +62,8 @@ export class SectionController {
   @ApiOperation({ summary: 'Crear una nueva sección' })
   @ApiResponse({ status: 201, description: 'Sección creada', type: SectionResponseDto })
   async create(@Body() createSectionDto: CreateSectionDto): Promise<SectionResponseDto> {
-    return this.createSectionUseCase.execute({
-      ...createSectionDto,
-      enrolledCount: 0,
-    });
+    const section = await this.createSectionUseCase.execute(createSectionDto);
+    return SectionMapper.toResponseDto(section);
   }
 
   @Put(':id')
@@ -75,7 +77,8 @@ export class SectionController {
     @Param('id') id: string,
     @Body() updateSectionDto: UpdateSectionDto,
   ): Promise<SectionResponseDto> {
-    return this.updateSectionUseCase.execute(+id, updateSectionDto);
+    const section = await this.updateSectionUseCase.execute(+id, updateSectionDto);
+    return SectionMapper.toResponseDto(section);
   }
 
   @Delete(':id')

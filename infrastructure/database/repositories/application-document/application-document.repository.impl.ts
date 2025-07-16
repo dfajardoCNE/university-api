@@ -26,8 +26,9 @@ export class ApplicationDocumentRepositoryImpl implements ApplicationDocumentRep
   }
 
   async create(document: Partial<ApplicationDocument>): Promise<ApplicationDocument> {
+    const { id, ...data } = document;
     return this.prisma.applicationDocument.create({
-      data: document,
+      data: data as any,
       include: {
         application: true,
       },

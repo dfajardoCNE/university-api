@@ -71,8 +71,9 @@ export class ReportRepositoryImpl implements ReportRepository {
   }
 
   async create(report: Partial<Report>): Promise<Report> {
+    const { id, ...data } = report;
     return this.prisma.report.create({
-      data: report,
+      data: data as any,
       include: {
         thread: true,
         post: true,
@@ -95,7 +96,7 @@ export class ReportRepositoryImpl implements ReportRepository {
     
     return this.prisma.report.update({
       where: { id },
-      data,
+      data: data as any,
       include: {
         thread: true,
         post: true,

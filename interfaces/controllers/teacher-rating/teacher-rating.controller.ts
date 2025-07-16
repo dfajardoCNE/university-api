@@ -12,7 +12,7 @@ import { CreateRatingUseCase } from '../../../domain/use-cases/teacher-rating/cr
 import { UpdateRatingUseCase } from '../../../domain/use-cases/teacher-rating/update-rating.use-case';
 import { DeleteRatingUseCase } from '../../../domain/use-cases/teacher-rating/delete-rating.use-case';
 
-@ApiTags('teacher-ratings')
+@ApiTags('evaluaciones')
 @Controller('teacher-ratings')
 export class TeacherRatingController {
   constructor(

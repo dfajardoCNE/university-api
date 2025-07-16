@@ -56,40 +56,14 @@ async function main() {
     },
   });
 
-  // Crear tipos de notificación
-  await prisma.notificationType.upsert({
-    where: { name: 'Info' },
+  // Crear notificaciones de ejemplo
+  await prisma.notification.upsert({
+    where: { id: 1 },
     update: {},
     create: {
-      name: 'Info',
-      description: 'Información general',
-    },
-  });
-
-  await prisma.notificationType.upsert({
-    where: { name: 'Assignment' },
-    update: {},
-    create: {
-      name: 'Assignment',
-      description: 'Asignación de tarea',
-    },
-  });
-
-  await prisma.notificationType.upsert({
-    where: { name: 'Exam' },
-    update: {},
-    create: {
-      name: 'Exam',
-      description: 'Examen programado',
-    },
-  });
-
-  await prisma.notificationType.upsert({
-    where: { name: 'Practice' },
-    update: {},
-    create: {
-      name: 'Practice',
-      description: 'Práctica programada',
+      userId: adminPerson.id,
+      title: 'Bienvenido al sistema',
+      message: 'Sistema inicializado correctamente',
     },
   });
 

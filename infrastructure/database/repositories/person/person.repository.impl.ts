@@ -24,15 +24,23 @@ export class PersonRepositoryImpl implements PersonRepository {
   }
 
   async create(person: Partial<Person>): Promise<Person> {
+    const { id, ...data } = person;
     return this.prisma.person.create({
-      data: person,
+      data: data as any,
     });
   }
 
   async update(id: number, person: Partial<Person>): Promise<Person> {
+    const { id: _, ...data } = person;
     return this.prisma.person.update({
       where: { id },
-      data: person,
+      data: data as any,
+    });
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.prisma.person.delete({
+      where: { id },
     });
   }
 }

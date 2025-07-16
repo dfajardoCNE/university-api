@@ -37,8 +37,9 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async create(user: Partial<User>): Promise<User> {
+    const { id, ...data } = user;
     return this.prisma.user.create({
-      data: user,
+      data: data as any,
       include: {
         person: true,
         role: true,
@@ -47,9 +48,10 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async update(id: number, user: Partial<User>): Promise<User> {
+    const { id: _, ...data } = user;
     return this.prisma.user.update({
       where: { id },
-      data: user,
+      data: data as any,
       include: {
         person: true,
         role: true,
