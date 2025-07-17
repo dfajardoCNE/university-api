@@ -1,5 +1,3 @@
-
-
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
@@ -10,29 +8,83 @@ function randomDate(start: Date, end: Date) {
 }
 
 async function main() {
-  // Universidad, facultad, campus, aulas
+  // Universidad, facultades, departamentos, campus, aulas
   const university = await prisma.university.create({
     data: {
-      name: 'Universidad Nacional',
-      country: 'Colombia',
+      name: 'Universidad Dominicana O&M',
+      country: 'República Dominicana',
       faculties: {
-        create: [{
-          name: 'Facultad de Ingeniería',
-          departments: {
-            create: [{
-              name: 'Departamento de Sistemas',
-            }],
+        create: [
+          {
+            name: 'Facultad de Ciencias Económicas y Administrativas',
+            departments: {
+              create: [
+                { name: 'Departamento de Contabilidad' },
+                { name: 'Departamento de Administración' },
+                { name: 'Departamento de Economía' },
+                { name: 'Departamento de Mercadotecnia' },
+              ],
+            },
           },
-        }],
+          {
+            name: 'Facultad de Ingeniería',
+            departments: {
+              create: [
+                { name: 'Departamento de Ciencias de la Computación' },
+              ],
+            },
+          },
+          {
+            name: 'Facultad de Turismo y Hotelería',
+            departments: {
+              create: [
+                { name: 'Departamento de Administración de Empresas Turísticas y Hoteleras' },
+              ],
+            },
+          },
+          {
+            name: 'Facultad de Derecho',
+            departments: {
+              create: [
+                { name: 'Departamento de Derecho' },
+              ],
+            },
+          },
+        ],
       },
       campuses: {
-        create: [{
-          name: 'Campus Central',
-          location: 'Cra 45 #26-85',
-          classrooms: {
-            create: Array.from({ length: 20 }).map((_, i) => ({ name: `Aula ${100 + i}`, capacity: 40 + i })),
+        create: [
+          {
+            name: 'Sede Central',
+            location: 'Santo Domingo',
+            classrooms: {
+              create: Array.from({ length: 20 }).map((_, i) => ({
+                name: `Aula ${100 + i}`,
+                capacity: 40 + i,
+              })),
+            },
           },
-        }],
+          {
+            name: 'Santiago de los Caballeros',
+            location: 'Santiago de los Caballeros',
+            classrooms: {
+              create: Array.from({ length: 10 }).map((_, i) => ({
+                name: `Aula ${200 + i}`,
+                capacity: 30 + i,
+              })),
+            },
+          },
+          {
+            name: 'Moca',
+            location: 'Moca',
+            classrooms: {
+              create: Array.from({ length: 10 }).map((_, i) => ({
+                name: `Aula ${300 + i}`,
+                capacity: 30 + i,
+              })),
+            },
+          },
+        ],
       },
     },
     include: {
@@ -40,11 +92,6 @@ async function main() {
       campuses: { include: { classrooms: true } },
     },
   });
-
-  const faculty = university.faculties[0];
-  const department = faculty.departments[0];
-  const campus = university.campuses[0];
-  const classrooms = campus.classrooms;
 
   // Periodo académico
   const term = await prisma.term.create({
@@ -55,7 +102,6 @@ async function main() {
     },
   });
 
-    // Admin
   // Roles (upsert para evitar duplicados)
   const [adminRole, professorRole, studentRole] = await Promise.all([
     prisma.role.upsert({
@@ -93,14 +139,25 @@ async function main() {
     },
   });
 
+  // Obtener departamentos
+  const departments = await prisma.department.findMany();
+
   // Carreras
   const careers = [];
-  for (let i = 1; i <= 10; i++) {
+  for (const dept of departments) {
+    let careerName;
+    if (dept.name === 'Departamento de Administración de Empresas Turísticas y Hoteleras') {
+      careerName = 'Licenciatura en Administración de Empresas Turísticas y Hoteleras';
+    } else if (dept.name === 'Departamento de Derecho') {
+      careerName = 'Licenciatura en Derecho';
+    } else {
+      careerName = `Carrera de ${dept.name.replace('Departamento de ', '')}`;
+    }
     const career = await prisma.career.create({
       data: {
-        departmentId: department.id,
-        name: `Carrera ${i}`,
-        description: `Descripción de la carrera ${i}`,
+        departmentId: dept.id,
+        name: careerName,
+        description: `Descripción de ${careerName}`,
       },
     });
     careers.push(career);
@@ -134,7 +191,7 @@ async function main() {
     professors.push({ person, user, professor });
   }
 
-  // Estudiantes y usuarios (username = matrícula)
+  // Estudiantes y usuarios
   const students = [];
   for (let i = 1; i <= 50; i++) {
     const uniqueSuffix = `${Date.now()}_${Math.floor(Math.random() * 10000)}`;
@@ -156,6 +213,7 @@ async function main() {
     });
     // Asignar carrera y campus aleatorio
     const career = careers[Math.floor(Math.random() * careers.length)];
+    const campus = university.campuses[Math.floor(Math.random() * university.campuses.length)];
     const student = await prisma.student.create({
       data: {
         personId: person.id,
@@ -172,7 +230,6 @@ async function main() {
   for (const career of careers) {
     const courses = [];
     for (let i = 1; i <= 30; i++) {
-      // Código único: carreraId + índice
       const code = `C${career.id}_${String(i).padStart(3, '0')}`;
       const course = await prisma.course.create({
         data: {
@@ -195,7 +252,9 @@ async function main() {
           },
         });
         const professor = professors[Math.floor(Math.random() * professors.length)].professor;
-        const classroom = classrooms[Math.floor(Math.random() * classrooms.length)];
+        // Seleccionar aula del mismo campus que la carrera (para mayor realismo)
+        const careerCampus = university.campuses[Math.floor(Math.random() * university.campuses.length)];
+        const classroom = careerCampus.classrooms[Math.floor(Math.random() * careerCampus.classrooms.length)];
         await prisma.section.create({
           data: {
             courseId: course.id,
@@ -209,7 +268,7 @@ async function main() {
     }
   }
 
-  console.log('Base de datos poblada con 50 estudiantes, 10 profesores, 10 carreras, 30 cursos por carrera y 10 secciones por curso.');
+  console.log('Base de datos poblada con datos realistas para la Universidad Dominicana O&M: 50 estudiantes, 10 profesores, 7 carreras, 30 cursos por carrera y 10 secciones por curso.');
 }
 
 main()
