@@ -68,7 +68,7 @@ src/
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone https://github.com/tu-usuario/university-api.git
+   git clone https://github.com/dfajardoCNE/university-api.git
    cd university-api
    ```
 
@@ -116,7 +116,7 @@ http://localhost:3000/api/docs
 
 <div align="center">
 
-![Swagger UI](https://static1.smartbear.co/swagger/media/images/tools/opensource/swagger_ui.png)
+![Swagger UI](shared/utils/university-api.png)
 
 </div>
 
@@ -130,7 +130,7 @@ http://localhost:3000/api/docs
 
 ## 📄 Licencia
 
-[![Licencia MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Licencia MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/mit)
 
 Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
 
@@ -140,6 +140,6 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE)
 
 ### ¿Encontraste un error o tienes una sugerencia?
 
-[![Reportar Issue](https://img.shields.io/badge/Reportar_Issue-GitHub-green.svg)](https://github.com/tu-usuario/university-api/issues/new)
+[![Reportar Issue](https://img.shields.io/badge/Reportar_Issue-GitHub-green.svg)](https://github.com/dfajardoCNE/university-api/issues/new)
 
 </div>
