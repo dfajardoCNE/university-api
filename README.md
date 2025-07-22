@@ -2,11 +2,11 @@
 
 # 🎓 Universidad API
 
-[![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
-[![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)](https://jwt.io/)
-[![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://swagger.io/)
+[![NestJS v9](https://img.shields.io/badge/NestJS_v9-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![PostgreSQL v14](https://img.shields.io/badge/PostgreSQL_v14-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Prisma v4](https://img.shields.io/badge/Prisma_v4-2D3748?style=for-the-badge&logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![JWT v9](https://img.shields.io/badge/JWT_v9-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)](https://jwt.io/)
+[![Swagger v6](https://img.shields.io/badge/Swagger_v6-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://swagger.io/)
 
 API RESTful para el sistema de gestión universitaria desarrollada con arquitectura limpia.
 
@@ -20,13 +20,14 @@ Este proyecto implementa una API RESTful para la gestión de una universidad, si
 
 ## 🛠️ Tecnologías
 
-| Categoría | Tecnologías |
-|-----------|-------------|
-| **Backend** | ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white) ![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white) |
-| **Base de datos** | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white) |
-| **ORM** | ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=flat-square&logo=prisma&logoColor=white) |
-| **Autenticación** | ![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=json-web-tokens&logoColor=white) con roles (estudiante, profesor, admin) |
-| **Documentación** | ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat-square&logo=swagger&logoColor=black) |
+| Categoría | Tecnologías | Versión |
+|-----------|-------------|--------|
+| **Backend** | ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white) | v16.x |
+| | ![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white) | v9.x |
+| **Base de datos** | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white) | v14.x |
+| **ORM** | ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=flat-square&logo=prisma&logoColor=white) | v4.x |
+| **Autenticación** | ![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=json-web-tokens&logoColor=white) | v9.x |
+| **Documentación** | ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=flat-square&logo=swagger&logoColor=black) | v6.x |
 
 ## 📁 Estructura del Proyecto
 
@@ -60,9 +61,9 @@ src/
 <details>
 <summary>Prerrequisitos</summary>
 
-- Node.js (v14 o superior)
-- PostgreSQL (v12 o superior)
-- npm o yarn
+- Node.js (v16.x o superior)
+- PostgreSQL (v14.x o superior)
+- npm (v8.x o superior) o yarn (v1.22.x o superior)
 
 </details>
 
